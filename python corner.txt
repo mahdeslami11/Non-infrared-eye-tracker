@@ -1,0 +1,32 @@
+import cv2
+import numpy as np
+
+# Load image in grayscale mode
+img = cv2.imread('image.jpg', 0)
+
+# Apply edge detection
+edges = cv2.Canny(img, 100, 200)
+
+# Find contours
+contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# Find the contour with maximum area
+max_area = 0
+max_contour = None
+for contour in contours:
+    area = cv2.contourArea(contour)
+    if area > max_area:
+        max_area = area
+        max_contour = contour
+
+# Find the corners of the rectangle
+epsilon = 0.1*cv2.arcLength(max_contour,True)
+corners = cv2.approxPolyDP(max_contour,epsilon,True)
+
+# Draw the rectangle
+cv2.drawContours(img, [corners], 0, (0, 255, 0), 2)
+
+# Display the image
+cv2.imshow('image', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

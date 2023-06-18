@@ -1,0 +1,16 @@
+% Load image
+img = imread('example.jpg');
+
+% Convert to grayscale
+gray_img = rgb2gray(img);
+
+% Apply threshold
+binary_img = imbinarize(gray_img);
+
+% Detect corners
+corners = corner(binary_img);
+
+% Visualize corners
+imshow(img);
+hold on;
+plot(corners(:,1), corners(:,2), 'r*');

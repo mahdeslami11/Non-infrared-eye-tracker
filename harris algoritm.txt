@@ -1,0 +1,35 @@
+برای استفاده از این کد کافیست جای image .jpg عکس مورد نظر خود را قرار بدهیم
+import cv2
+import numpy as np
+
+# Load the image
+img = cv2.imread('image.jpg')
+
+# Convert the image to grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# Apply Sobel operator to find the x and y gradient values
+Ix = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+Iy = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+
+# Compute the M matrix
+Ix2 = Ix**2
+Iy2 = Iy**2
+Ixy = Ix*Iy
+k = 0.04
+M = np.array([[Ix2, Ixy], [Ixy, Iy2]])
+detM = np.linalg.det(M)
+traceM = np.trace(M)
+R = detM - k*traceM**2
+
+# Threshold the R values to find the corners
+thresh = 0.01 * R.max()
+corners = np.zeros_like(R)
+corners[R > thresh] = 1
+
+# Draw the corners on the image
+img[corners == 1] = [0, 0, 255]
+
+# Display the image
+cv2.imshow('image', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
